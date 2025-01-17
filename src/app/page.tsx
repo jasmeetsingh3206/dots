@@ -7,7 +7,7 @@ const generateYearData = () => {
 	const startOfYear = DateTime.now().startOf('year');
 	const endOfYear = DateTime.now().endOf('year');
 
-	let yearData = [] as DateTime[];
+	const yearData = [] as DateTime[];
 	for (let i = startOfYear; i <= endOfYear; i = i.plus({ days: 1 })) {
 		yearData.push(i);
 	}
