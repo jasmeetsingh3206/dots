@@ -2,7 +2,27 @@
 import { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { AnimatePresence, motion } from 'framer-motion';
+import { viewType } from '@/constants';
 
+const headingDisplay = (currentDate: DateTime, selectedView: viewType) => {
+	switch (selectedView) {
+		case viewType.year: {
+			return currentDate.year;
+		}
+		case viewType.month: {
+			return `${currentDate.monthLong} ${currentDate.year}`;
+		}
+		case viewType.week: {
+			return ` Week-${Math.ceil(currentDate.day / 7)} ${currentDate.monthShort}  ${currentDate.year}`;
+		}
+		case viewType.day: {
+			return `${currentDate.day} ${currentDate.monthLong} ${currentDate.year}`;
+		}
+		default: {
+			return currentDate.year;
+		}
+	}
+};
 const generateYearData = () => {
 	const startOfYear = DateTime.now().startOf('year');
 	const endOfYear = DateTime.now().endOf('year');
@@ -12,6 +32,25 @@ const generateYearData = () => {
 		yearData.push(i);
 	}
 	return yearData;
+};
+const getFilteredData = (yearData: DateTime[], selectedView: viewType) => {
+	switch (selectedView) {
+		case viewType.year: {
+			return currentDate.year;
+		}
+		case viewType.month: {
+			return `${currentDate.monthLong} ${currentDate.year}`;
+		}
+		case viewType.week: {
+			return ` Week-${Math.ceil(currentDate.day / 7)} ${currentDate.monthShort}  ${currentDate.year}`;
+		}
+		case viewType.day: {
+			return `${currentDate.day} ${currentDate.monthLong} ${currentDate.year}`;
+		}
+		default: {
+			return currentDate.year;
+		}
+	}
 };
 
 const DotsGrid = ({ data, isMonthView }: { data: DateTime[]; isMonthView: boolean }) => {
@@ -45,14 +84,37 @@ export default function Home() {
 	const [yearData, setYearData] = useState<DateTime[]>([]);
 	const [viewMode, setViewMode] = useState<'year' | 'month'>('year');
 	const [remainingMode, setRemainingMode] = useState<'M1' | 'M2'>('M1');
+	const [selectedView, setSelectedView] = useState<viewType>(viewType.year);
 
 	useEffect(() => {
 		const now = DateTime.now();
 		setYearData(generateYearData());
 		setCurrentDate(now);
+		setSelectedView(viewType.year);
 	}, []);
 
 	const handleDateClick = () => {
+		switch (selectedView) {
+			case viewType.year: {
+				setSelectedView(viewType.month);
+				break;
+			}
+			case viewType.month: {
+				setSelectedView(viewType.week);
+				break;
+			}
+			case viewType.week: {
+				setSelectedView(viewType.day);
+				break;
+			}
+			case viewType.day: {
+				setSelectedView(viewType.year);
+				break;
+			}
+			default: {
+				setSelectedView(viewType.year);
+			}
+		}
 		setViewMode((prev) => (prev === 'year' ? 'month' : 'year'));
 	};
 
@@ -63,7 +125,8 @@ export default function Home() {
 	if (!currentDate) return null;
 
 	// Filter data for current month
-	const filteredData = viewMode === 'month' ? yearData.filter((d) => d.hasSame(currentDate, 'month')) : yearData;
+	// const filteredData = viewMode === 'month' ? yearData.filter((d) => d.hasSame(currentDate, selectedView)) : yearData;
+	const filteredData = yearData.filter((d) => d.hasSame(currentDate, selectedView));
 
 	const daysLeft = currentDate.endOf('year').ordinal - currentDate.ordinal;
 	const percentageLeft = ((daysLeft / currentDate.endOf('year').ordinal) * 100).toFixed(1);
@@ -71,6 +134,17 @@ export default function Home() {
 	return (
 		<main className='bg-black h-screen font-mono'>
 			<div className='container pt-10 mx-auto bg-black'>
+				<AnimatePresence mode='wait'>
+					<motion.h1
+						key={selectedView}
+						transition={{ duration: 0.3 }}
+						initial={{ y: 10, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						exit={{ y: -10, opacity: 0 }}
+						className='pl-2 font-semibold text-zinc-200 text-4xl'>
+						{headingDisplay(currentDate, selectedView)}
+					</motion.h1>
+				</AnimatePresence>
 				<DotsGrid
 					data={filteredData}
 					isMonthView={viewMode === 'month'}
@@ -95,7 +169,7 @@ export default function Home() {
 								animate={{ y: 0, opacity: 1 }}
 								exit={{ y: -10, opacity: 0 }}
 								className='absolute inset-0 flex items-center justify-center w-full h-full'>
-								{remainingMode === 'M1' ? `${daysLeft} Days left.` : `${percentageLeft}% left.`}
+								{remainingMode === 'M1' ? `${daysLeft} Days left` : `${percentageLeft}% left`}
 							</motion.div>
 						</AnimatePresence>
 					</button>
