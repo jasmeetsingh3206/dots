@@ -33,26 +33,6 @@ const generateYearData = () => {
 	}
 	return yearData;
 };
-const getFilteredData = (yearData: DateTime[], selectedView: viewType) => {
-	switch (selectedView) {
-		case viewType.year: {
-			return currentDate.year;
-		}
-		case viewType.month: {
-			return `${currentDate.monthLong} ${currentDate.year}`;
-		}
-		case viewType.week: {
-			return ` Week-${Math.ceil(currentDate.day / 7)} ${currentDate.monthShort}  ${currentDate.year}`;
-		}
-		case viewType.day: {
-			return `${currentDate.day} ${currentDate.monthLong} ${currentDate.year}`;
-		}
-		default: {
-			return currentDate.year;
-		}
-	}
-};
-
 const DotsGrid = ({ data, isMonthView }: { data: DateTime[]; isMonthView: boolean }) => {
 	return (
 		<motion.div
