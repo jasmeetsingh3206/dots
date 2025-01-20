@@ -35,13 +35,7 @@ const generateYearData = () => {
 };
 const DotsGrid = ({ data, isMonthView }: { data: DateTime[]; isMonthView: boolean }) => {
 	return (
-		// <motion.div
-		// 	className={`grid justify-items-center  gap-3 transition-all bg-slate-300 ${
-		// 		isMonthView
-		// 			? 'grid-cols-7 sm:gap-4 sm:pt-8' // 7 columns for a month
-		// 			: 'grid-cols-[repeat(16,minmax(0,1fr))] sm:grid-cols-[repeat(26,minmax(0,1fr))] sm:gap-x-2 sm:gap-y-8 sm:pt-6'
-		// 	}`}>
-		<motion.div className={`grid ${isMonthView ? 'gap-12  grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] ' : ' gap-4  grid-cols-[repeat(auto-fill,minmax(2rem,1fr))] '}`}>
+		<motion.div className={`grid ${isMonthView ? 'gap-12  grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] ' : ' gap-4  grid-cols-[repeat(auto-fill,minmax(1.75rem,1fr))] '}`}>
 			{data.map((date) => (
 				<motion.div
 					key={date.toISO()} // Unique key
@@ -109,8 +103,10 @@ export default function Home() {
 	// const filteredData = viewMode === 'month' ? yearData.filter((d) => d.hasSame(currentDate, selectedView)) : yearData;
 	const filteredData = yearData.filter((d) => d.hasSame(currentDate, selectedView));
 
-	const daysLeft = currentDate.endOf('year').ordinal - currentDate.ordinal;
-	const percentageLeft = ((daysLeft / currentDate.endOf('year').ordinal) * 100).toFixed(1);
+	const daysLeft =  currentDate.endOf(selectedView).diff(currentDate, "days").days.toFixed(0);
+	const totalDaysInView = currentDate.endOf(selectedView).diff(currentDate.startOf(selectedView), "days").days;
+	const percentageLeft = ((Number(daysLeft) / totalDaysInView) * 100).toFixed(1);
+	
 
 	return (
 		<main className='bg-black h-screen font-mono'>
@@ -144,8 +140,8 @@ export default function Home() {
 						className='relative min-w-32 text-right'>
 						<AnimatePresence mode='wait'>
 							<motion.div
-								key={remainingMode}
-								transition={{ duration: 0.1 }}
+								key={remainingMode+daysLeft+percentageLeft}
+								transition={{ duration: 0.3 }}
 								initial={{ y: 10, opacity: 0 }}
 								animate={{ y: 0, opacity: 1 }}
 								exit={{ y: -10, opacity: 0 }}
