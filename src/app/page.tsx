@@ -35,19 +35,20 @@ const generateYearData = () => {
 };
 const DotsGrid = ({ data, isMonthView }: { data: DateTime[]; isMonthView: boolean }) => {
 	return (
-		<motion.div
-			className={`grid justify-items-center  gap-3 transition-all ${
-				isMonthView
-					? 'grid-cols-7 sm:gap-4 sm:pt-8' // 7 columns for a month
-					: 'grid-cols-[repeat(16,minmax(0,1fr))] sm:grid-cols-[repeat(26,minmax(0,1fr))] sm:gap-x-2 sm:gap-y-8 sm:pt-6'
-			}`}>
+		// <motion.div
+		// 	className={`grid justify-items-center  gap-3 transition-all bg-slate-300 ${
+		// 		isMonthView
+		// 			? 'grid-cols-7 sm:gap-4 sm:pt-8' // 7 columns for a month
+		// 			: 'grid-cols-[repeat(16,minmax(0,1fr))] sm:grid-cols-[repeat(26,minmax(0,1fr))] sm:gap-x-2 sm:gap-y-8 sm:pt-6'
+		// 	}`}>
+		<motion.div className={`grid ${isMonthView ? 'gap-12  grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] ' : ' gap-4  grid-cols-[repeat(auto-fill,minmax(2rem,1fr))] '}`}>
 			{data.map((date) => (
 				<motion.div
 					key={date.toISO()} // Unique key
 					layout // Enables smooth transitions
 					transition={{ type: 'spring', damping: 15, stiffness: 100 }}
-					className='group relative cursor-pointer'>
-					<div className={`transition-all hover:scale-125 rounded-full bg-white ${isMonthView ? 'size-5 sm:size-6' : 'size-3 sm:size-4'} ${date < DateTime.now().minus({ days: 1 }) ? 'opacity-50' : ''} ${date.hasSame(DateTime.now(), 'day') ? '!bg-red-500 animate-pulse ' : ''}`}></div>
+					className='group relative cursor-pointer  aspect-square'>
+					<div className={`transition-all hover:scale-125 rounded-full bg-white size-full ${date < DateTime.now().minus({ days: 1 }) ? 'opacity-50' : ''} ${date.hasSame(DateTime.now(), 'day') ? '!bg-red-500 animate-pulse ' : ''}`}></div>
 					<motion.div
 						animate={{ rotate: 360 }}
 						className='hidden group-hover:block absolute z-50 shadow-2xl text-sm bg-zinc-900 text-white rounded left-5 min-w-36 p-2'>
@@ -121,13 +122,13 @@ export default function Home() {
 						initial={{ y: 10, opacity: 0 }}
 						animate={{ y: 0, opacity: 1 }}
 						exit={{ y: -10, opacity: 0 }}
-						className='pl-2 font-semibold text-zinc-200 text-4xl'>
+						className='font-semibold text-zinc-200 text-5xl mb-8'>
 						{headingDisplay(currentDate, selectedView)}
 					</motion.h1>
 				</AnimatePresence>
 				<DotsGrid
 					data={filteredData}
-					isMonthView={viewMode === 'month'}
+					isMonthView={selectedView != viewType.year}
 				/>
 			</div>
 			<div className='absolute w-screen  bottom-10 '>
