@@ -35,7 +35,7 @@ const generateYearData = () => {
 };
 const DotsGrid = ({ data, isMonthView }: { data: DateTime[]; isMonthView: boolean }) => {
 	return (
-		<motion.div className={`grid ${isMonthView ? 'gap-12  grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] ' : ' gap-4  grid-cols-[repeat(auto-fill,minmax(1.75rem,1fr))] '}`}>
+		<motion.div className={`grid ${isMonthView ? 'gap-6 sm: gap-12 grid-cols-[repeat(auto-fill,minmax(2rem,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(3.5rem,1fr))] ' : 'gap-2 grid-cols-[repeat(auto-fill,minmax(.8rem,1fr))] sm:gap-4   sm:grid-cols-[repeat(auto-fill,minmax(1.75rem,1fr))] '}`}>
 			{data.map((date) => (
 				<motion.div
 					key={date.toISO()} // Unique key
@@ -110,7 +110,7 @@ export default function Home() {
 
 	return (
 		<main className='bg-black h-screen font-mono'>
-			<div className='container pt-10 mx-auto bg-black'>
+			<div className='container pt-10 mx-auto bg-black px-6'>
 				<AnimatePresence mode='wait'>
 					<motion.h1
 						key={selectedView}
@@ -128,7 +128,7 @@ export default function Home() {
 				/>
 			</div>
 			<div className='absolute w-screen  bottom-10 '>
-				<div className='container hover:bg-white hover:bg-opacity-5 py-3 rounded-xl mx-auto flex justify-between items-center text-white px-2'>
+				<div className='container mx-auto hover:bg-white hover:bg-opacity-5 py-3 px-4 rounded-xl mx-auto flex justify-between items-center text-white px-2'>
 					<span
 						className='cursor-pointer'
 						onClick={handleDateClick}>
@@ -137,7 +137,7 @@ export default function Home() {
 
 					<button
 						onClick={handleRemainingButtonClick}
-						className='relative min-w-32 text-right'>
+						className='relative text-right'>
 						<AnimatePresence mode='wait'>
 							<motion.div
 								key={remainingMode+daysLeft+percentageLeft}
@@ -145,7 +145,7 @@ export default function Home() {
 								initial={{ y: 10, opacity: 0 }}
 								animate={{ y: 0, opacity: 1 }}
 								exit={{ y: -10, opacity: 0 }}
-								className='absolute inset-0 flex items-center justify-center w-full h-full'>
+								className=' flex items-center w-full h-full text-right'>
 								{remainingMode === 'M1' ? `${daysLeft} Days left` : `${percentageLeft}% left`}
 							</motion.div>
 						</AnimatePresence>
